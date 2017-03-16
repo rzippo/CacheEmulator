@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace CacheSimulator {
+namespace CacheEmulator {
 	template <unsigned memoryBlockIndexSize, unsigned memoryOffsetSize>
 	class RAM {
 
@@ -20,7 +20,7 @@ namespace CacheSimulator {
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize>
-CacheSimulator::RAM<memoryBlockIndexSize, memoryOffsetSize>::RAM()
+CacheEmulator::RAM<memoryBlockIndexSize, memoryOffsetSize>::RAM()
 {
 	for (int i = 0; i < (1 << memoryBlockIndexSize); i++)
 	{
@@ -32,12 +32,12 @@ CacheSimulator::RAM<memoryBlockIndexSize, memoryOffsetSize>::RAM()
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize>
-char* CacheSimulator::RAM<memoryBlockIndexSize, memoryOffsetSize>::readBlock(bitset<memoryBlockIndexSize> blockIndex) {
+char* CacheEmulator::RAM<memoryBlockIndexSize, memoryOffsetSize>::readBlock(bitset<memoryBlockIndexSize> blockIndex) {
 	return blocks[blockIndex.to_ullong()];
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize>
-void CacheSimulator::RAM<memoryBlockIndexSize, memoryOffsetSize>::writeBlock(bitset<memoryBlockIndexSize> blockIndex, char data[]) {
+void CacheEmulator::RAM<memoryBlockIndexSize, memoryOffsetSize>::writeBlock(bitset<memoryBlockIndexSize> blockIndex, char data[]) {
 	char* block = blocks[blockIndex.to_ullong()];
 	for (int i = 0; i < 1 << memoryOffsetSize; i++)
 	{
