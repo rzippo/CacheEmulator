@@ -8,17 +8,17 @@
 
 using namespace std;
 
-namespace CacheSimulator {
+namespace CacheEmulator {
 	template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
 	class Cache {
 		static_assert((cacheBlockIndexSize + tagSize) == memoryBlockIndexSize, "The cache index and tag must be parts of the RAM block index");
 
 	protected:
-		CacheSimulator::RAM<memoryBlockIndexSize, memoryOffsetSize>* memory;
-		CacheSimulator::WriteStrategy writeStrategy;
+		CacheEmulator::RAM<memoryBlockIndexSize, memoryOffsetSize>* memory;
+		CacheEmulator::WriteStrategy writeStrategy;
 
 		Cache(RAM<memoryBlockIndexSize, memoryOffsetSize>* memory, WriteStrategy writeStrategy);
-		void replaceAndFetch(CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>* entry, bitset<memoryBlockIndexSize> entryBlockIndex, bitset<memoryBlockIndexSize> newBlockIndex);
+		void replaceAndFetch(CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>* entry, bitset<memoryBlockIndexSize> entryBlockIndex, bitset<memoryBlockIndexSize> newBlockIndex);
 
 	public:
 		virtual char read(bitset<memoryBlockIndexSize + memoryOffsetSize> address) = 0;
@@ -28,14 +28,14 @@ namespace CacheSimulator {
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-inline CacheSimulator::Cache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::Cache(RAM<memoryBlockIndexSize, memoryOffsetSize>* memory, WriteStrategy writeStrategy)
+inline CacheEmulator::Cache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::Cache(RAM<memoryBlockIndexSize, memoryOffsetSize>* memory, WriteStrategy writeStrategy)
 {
 	this->memory = memory;
 	this->writeStrategy = writeStrategy;
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-void CacheSimulator::Cache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::replaceAndFetch(CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>* victimEntry, bitset<memoryBlockIndexSize> victimMemoryBlockIndex, bitset<memoryBlockIndexSize> replacingMemoryBlockIndex)
+void CacheEmulator::Cache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::replaceAndFetch(CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>* victimEntry, bitset<memoryBlockIndexSize> victimMemoryBlockIndex, bitset<memoryBlockIndexSize> replacingMemoryBlockIndex)
 {
 	//Write back the old block's data, if needed
 	if (victimEntry->presenceBit.test(0) && writeStrategy == WriteStrategy::WriteBack)

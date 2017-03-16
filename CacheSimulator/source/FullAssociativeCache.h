@@ -9,9 +9,9 @@
 
 using namespace std;
 
-namespace CacheSimulator {
+namespace CacheEmulator {
 	template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize, unsigned associativity>
-	class FullAssociativeCache : CacheSimulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity> {
+	class FullAssociativeCache : CacheEmulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity> {
 		static_assert(cacheBlockIndexSize == 0, "CacheBlockIndexSize must be == 0");
 
 	private:
@@ -28,7 +28,7 @@ namespace CacheSimulator {
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize, unsigned associativity>
-char CacheSimulator::FullAssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity>::read(bitset<memoryBlockIndexSize + memoryOffsetSize> address)
+char CacheEmulator::FullAssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity>::read(bitset<memoryBlockIndexSize + memoryOffsetSize> address)
 {
 	vector<CacheEntry<tagSize, memoryOffsetSize>*> vecSet;
 	for (int i = 0; i < associativity; i++)
@@ -39,7 +39,7 @@ char CacheSimulator::FullAssociativeCache<memoryBlockIndexSize, memoryOffsetSize
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize, unsigned associativity>
-void CacheSimulator::FullAssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity>::write(bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data)
+void CacheEmulator::FullAssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity>::write(bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data)
 {
 	vector<CacheEntry<tagSize, memoryOffsetSize>*> vecSet;
 	for (int i = 0; i < associativity; i++)
@@ -50,7 +50,7 @@ void CacheSimulator::FullAssociativeCache<memoryBlockIndexSize, memoryOffsetSize
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize, unsigned associativity>
-inline void CacheSimulator::FullAssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity>::flush()
+inline void CacheEmulator::FullAssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity>::flush()
 {
 	for (int i = 0; i < associativity; i++)
 	{
