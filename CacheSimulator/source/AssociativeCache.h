@@ -9,9 +9,9 @@
 
 using namespace std;
 
-namespace CacheSimulator {
+namespace CacheEmulator {
 	template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-	class AssociativeCache : CacheSimulator::Cache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize> {
+	class AssociativeCache : CacheEmulator::Cache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize> {
 	protected:
 		unsigned int associativity;
 
@@ -21,16 +21,16 @@ namespace CacheSimulator {
 			this->associativity = (associativity < 2) ? 2 : associativity;
 		};
 
-		char readSet(vector<CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>*> set, bitset<memoryBlockIndexSize + memoryOffsetSize> address);
-		void writeSet(vector<CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>*> set, bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data);
+		char readSet(vector<CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>*> set, bitset<memoryBlockIndexSize + memoryOffsetSize> address);
+		void writeSet(vector<CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>*> set, bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data);
 
-		CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>* scanSet(vector<CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>*> set, bitset<tagSize> tag);
-		CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>* selectVictim(vector<CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>*> set);
+		CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>* scanSet(vector<CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>*> set, bitset<tagSize> tag);
+		CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>* selectVictim(vector<CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>*> set);
 	};
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-char CacheSimulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::readSet(vector<CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>*> set, bitset<memoryBlockIndexSize + memoryOffsetSize> address)
+char CacheEmulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::readSet(vector<CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>*> set, bitset<memoryBlockIndexSize + memoryOffsetSize> address)
 {
 	bitset<memoryBlockIndexSize> blockIndex = address >> memoryOffsetSize;
 	bitset<memoryOffsetSize> offset = (address << memoryBlockIndexSize) >> memoryBlockIndexSize;
@@ -52,7 +52,7 @@ char CacheSimulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, ca
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-void CacheSimulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::writeSet(vector<CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>*> set, bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data)
+void CacheEmulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::writeSet(vector<CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>*> set, bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data)
 {
 	bitset<memoryBlockIndexSize> blockIndex = address >> memoryOffsetSize;
 	bitset<memoryOffsetSize> offset = (address << memoryBlockIndexSize) >> memoryBlockIndexSize;
@@ -76,7 +76,7 @@ void CacheSimulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, ca
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>* CacheSimulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::scanSet(vector<CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>*> set, bitset<tagSize> tag) {
+CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>* CacheEmulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::scanSet(vector<CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>*> set, bitset<tagSize> tag) {
 	CacheEntry<tagSize, memoryOffsetSize>* emptySlot = null;
 	for (CacheEntry<tagSize, memoryOffsetSize>* entry : set)
 	{
@@ -91,7 +91,7 @@ CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>* CacheSimulator::Associati
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>* CacheSimulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::selectVictim(vector<CacheSimulator::CacheEntry<tagSize, memoryOffsetSize>*> set) {
+CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>* CacheEmulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::selectVictim(vector<CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>*> set) {
 	int victim = rand() % associativity;
 	return set.operator[victim];
 }
