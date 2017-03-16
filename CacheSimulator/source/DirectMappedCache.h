@@ -8,12 +8,12 @@
 
 using namespace std;
 
-namespace CacheEmulator {
+namespace CacheSimulator {
 	template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-	class DirectMappedCache : CacheEmulator::Cache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>{
+	class DirectMappedCache : CacheSimulator::Cache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>{
 
 	private:
-		CacheEmulator::BlockMapping<cacheBlockIndexSize, tagSize, memoryOffsetSize> mapping;
+		CacheSimulator::BlockMapping<cacheBlockIndexSize, tagSize, memoryOffsetSize> mapping;
 
 	public:
 		DirectMappedCache(RAM<memoryBlockIndexSize, memoryOffsetSize>* memory, WriteStrategy writeStrategy) : Cache(memory, writeStrategy) {};
@@ -25,7 +25,7 @@ namespace CacheEmulator {
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-char CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::read(bitset<memoryBlockIndexSize + memoryOffsetSize> address) {
+char CacheSimulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::read(bitset<memoryBlockIndexSize + memoryOffsetSize> address) {
 	bitset<memoryBlockIndexSize> blockIndex = address.to_ullong() >> memoryOffsetSize;
 	bitset<memoryOffsetSize> offset = address.to_ullong();
 	bitset<tagSize> tag = blockIndex.to_ullong() >> cacheBlockIndexSize;
@@ -43,7 +43,7 @@ char CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, ca
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-void CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::write(bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data) {
+void CacheSimulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::write(bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data) {
 	bitset<memoryBlockIndexSize> blockIndex = address.to_ullong() >> memoryOffsetSize;
 	bitset<memoryOffsetSize> offset = address.to_ullong();
 	bitset<tagSize> tag = blockIndex.to_ullong() >> cacheBlockIndexSize;
@@ -63,7 +63,7 @@ void CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, ca
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-void CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::flush()
+void CacheSimulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::flush()
 {
 	for (int i = 0; i < (1 << cacheBlockIndexSize); i++)
 	{

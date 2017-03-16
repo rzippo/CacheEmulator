@@ -5,7 +5,7 @@
 #include "SetAssociativeCache.h"
 #include "RAM.h"
 
-using namespace CacheEmulator;
+using namespace CacheSimulator;
 
 void directMappedTest()
 {

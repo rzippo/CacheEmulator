@@ -2,9 +2,9 @@
 
 #include "CacheEntry.h"
 
-namespace CacheEmulator {
+namespace CacheSimulator {
 	template<unsigned cacheBlockIndexSize, unsigned tagSize, unsigned memoryOffsetSize>
 	struct BlockMapping {
-		CacheEmulator::CacheEntry<tagSize, memoryOffsetSize> entries[1 << cacheBlockIndexSize];
+		CacheSimulator::CacheEntry<tagSize, memoryOffsetSize> entries[1 << cacheBlockIndexSize];
 	};
 }

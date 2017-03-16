@@ -1,4 +1,4 @@
-namespace CacheEmulator {
+namespace CacheSimulator {
 	enum WriteStrategy {
 		WriteThrough, 
 		WriteBack

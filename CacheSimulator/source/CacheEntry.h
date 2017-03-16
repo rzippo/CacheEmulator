@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace CacheEmulator {
+namespace CacheSimulator {
 	template <unsigned tagSize, unsigned memoryOffsetSize>
 	struct CacheEntry {
 		bitset<tagSize> tag;
