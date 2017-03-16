@@ -38,7 +38,7 @@ template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cach
 void CacheEmulator::Cache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::replaceAndFetch(CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>* victimEntry, bitset<memoryBlockIndexSize> victimMemoryBlockIndex, bitset<memoryBlockIndexSize> replacingMemoryBlockIndex)
 {
 	//Write back the old block's data, if needed
-	if (victimEntry->presenceBit == 1 && writeStrategy == WriteStrategy::WriteBack)
+	if (victimEntry->presenceBit.test(0) && writeStrategy == WriteStrategy::WriteBack)
 	{
 		memory->writeBlock(victimMemoryBlockIndex, victimEntry->data);
 	}
@@ -49,6 +49,6 @@ void CacheEmulator::Cache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockInde
 	{
 		victimEntry->data[i] = newData[i];
 	}
-	victimEntry->presenceBit = 1;
+	victimEntry->presenceBit.set();
 	victimEntry->tag = replacingMemoryBlockIndex.to_ullong() >> cacheBlockIndexSize;
 }

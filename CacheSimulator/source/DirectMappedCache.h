@@ -27,12 +27,12 @@ namespace CacheEmulator {
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
 char CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::read(bitset<memoryBlockIndexSize + memoryOffsetSize> address) {
 	bitset<memoryBlockIndexSize> blockIndex = address.to_ullong() >> memoryOffsetSize;
-	bitset<memoryOffsetSize> offset = (address.to_ullong() << memoryBlockIndexSize) >> memoryBlockIndexSize;
+	bitset<memoryOffsetSize> offset = address.to_ullong();
 	bitset<tagSize> tag = blockIndex.to_ullong() >> cacheBlockIndexSize;
-	bitset<cacheBlockIndexSize> cacheIndex = (blockIndex.to_ullong() << tagSize) >> tagSize;
+	bitset<cacheBlockIndexSize> cacheIndex = blockIndex.to_ullong();
 
 	CacheEntry<tagSize, memoryOffsetSize>* entry = &(mapping.entries[cacheIndex.to_ullong()]);
-	if (entry->presenceBit != 1 || entry->tag != tag)
+	if (!entry->presenceBit.test(0) || entry->tag != tag)
 	{
 		//Miss
 		bitset<memoryBlockIndexSize> victimBlockIndex = (entry->tag.to_ullong() << cacheBlockIndexSize) + cacheIndex.to_ullong();
@@ -45,12 +45,12 @@ char CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, ca
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
 void CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::write(bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data) {
 	bitset<memoryBlockIndexSize> blockIndex = address.to_ullong() >> memoryOffsetSize;
-	bitset<memoryOffsetSize> offset = (address.to_ullong() << memoryBlockIndexSize) >> memoryBlockIndexSize;
+	bitset<memoryOffsetSize> offset = address.to_ullong();
 	bitset<tagSize> tag = blockIndex.to_ullong() >> cacheBlockIndexSize;
-	bitset<cacheBlockIndexSize> cacheIndex = (blockIndex.to_ullong() << tagSize) >> tagSize;
+	bitset<cacheBlockIndexSize> cacheIndex = blockIndex.to_ullong();
 
 	CacheEntry<tagSize, memoryOffsetSize>* entry = &(mapping.entries[cacheIndex.to_ullong()]);
-	if (entry->presenceBit != 1 || entry->tag != tag)
+	if (!entry->presenceBit.test(0) || entry->tag != tag)
 	{
 		//Miss
 		bitset<memoryBlockIndexSize> victimBlockIndex = (entry->tag.to_ullong() << cacheBlockIndexSize) + cacheIndex.to_ullong();
@@ -67,6 +67,6 @@ void CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, ca
 {
 	for (int i = 0; i < (1 << cacheBlockIndexSize); i++)
 	{
-		mapping.entries[i].presenceBit = 0;
+		mapping.entries[i].presenceBit.reset();
 	}
 }
