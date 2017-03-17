@@ -10,42 +10,23 @@ using namespace std;
 
 namespace CacheEmulator {
 	template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-	class DirectMappedCache : CacheEmulator::Cache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>{
+	class DirectMappedCache : public CacheEmulator::Cache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>{
 
-	private:
+	protected:
 		CacheEmulator::BlockMapping<cacheBlockIndexSize, tagSize, memoryOffsetSize> mapping;
 
-	public:
-		DirectMappedCache(RAM<memoryBlockIndexSize, memoryOffsetSize>* memory, WriteStrategy writeStrategy) : Cache(memory, writeStrategy) {};
+		CacheEntry<tagSize, memoryOffsetSize>* retrieveEntry(bitset<memoryBlockIndexSize> blockIndex) final;
 
-		char read(bitset<memoryBlockIndexSize + memoryOffsetSize> address) final;
-		void write(bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data) final;
+	public:
+		DirectMappedCache(MemoryComponent<memoryBlockIndexSize, memoryOffsetSize>* lowerMemory, WriteStrategy writeStrategy) : Cache(lowerMemory, writeStrategy) {};
+
 		void flush() final;
 	};
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-char CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::read(bitset<memoryBlockIndexSize + memoryOffsetSize> address) {
-	bitset<memoryBlockIndexSize> blockIndex = address.to_ullong() >> memoryOffsetSize;
-	bitset<memoryOffsetSize> offset = address.to_ullong();
-	bitset<tagSize> tag = blockIndex.to_ullong() >> cacheBlockIndexSize;
-	bitset<cacheBlockIndexSize> cacheIndex = blockIndex.to_ullong();
-
-	CacheEntry<tagSize, memoryOffsetSize>* entry = &(mapping.entries[cacheIndex.to_ullong()]);
-	if (!entry->presenceBit.test(0) || entry->tag != tag)
-	{
-		//Miss
-		bitset<memoryBlockIndexSize> victimBlockIndex = (entry->tag.to_ullong() << cacheBlockIndexSize) + cacheIndex.to_ullong();
-		replaceAndFetch(entry, victimBlockIndex , blockIndex);
-	}
-
-	return entry->data[offset.to_ullong()];
-}
-
-template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>
-void CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::write(bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data) {
-	bitset<memoryBlockIndexSize> blockIndex = address.to_ullong() >> memoryOffsetSize;
-	bitset<memoryOffsetSize> offset = address.to_ullong();
+CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>* CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize>::retrieveEntry(bitset<memoryBlockIndexSize> blockIndex)
+{
 	bitset<tagSize> tag = blockIndex.to_ullong() >> cacheBlockIndexSize;
 	bitset<cacheBlockIndexSize> cacheIndex = blockIndex.to_ullong();
 
@@ -57,9 +38,7 @@ void CacheEmulator::DirectMappedCache<memoryBlockIndexSize, memoryOffsetSize, ca
 		replaceAndFetch(entry, victimBlockIndex, blockIndex);
 	}
 
-	entry->data[offset.to_ullong()] = data;
-	if (writeStrategy == WriteStrategy::WriteThrough)
-		memory->writeBlock(blockIndex, entry->data);
+	return entry;
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize>

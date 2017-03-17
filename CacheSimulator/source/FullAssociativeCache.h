@@ -11,42 +11,31 @@ using namespace std;
 
 namespace CacheEmulator {
 	template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize, unsigned associativity>
-	class FullAssociativeCache : CacheEmulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity> {
+	class FullAssociativeCache : public CacheEmulator::AssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity> {
 		static_assert(cacheBlockIndexSize == 0, "CacheBlockIndexSize must be == 0");
 
-	private:
+	protected:
 		CacheEntry<tagSize, memoryOffsetSize> set[associativity];
 
+		vector<CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>*> retrieveSet(bitset<memoryBlockIndexSize> blockIndex) final;
+
 	public:
-		FullAssociativeCache(RAM<memoryBlockIndexSize, memoryOffsetSize>* memory, WriteStrategy writeStrategy)
-			:AssociativeCache(memory, writeStrategy) {};
+		FullAssociativeCache(MemoryComponent<memoryBlockIndexSize, memoryOffsetSize>* lowerMemory, WriteStrategy writeStrategy)
+			:AssociativeCache(lowerMemory, writeStrategy) {};
 		
-		char read(bitset<memoryBlockIndexSize + memoryOffsetSize> address) final;
-		void write(bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data) final;
 		void flush() final;
 	};
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize, unsigned associativity>
-char CacheEmulator::FullAssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity>::read(bitset<memoryBlockIndexSize + memoryOffsetSize> address)
+vector<CacheEmulator::CacheEntry<tagSize, memoryOffsetSize>*> CacheEmulator::FullAssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity>::retrieveSet(bitset<memoryBlockIndexSize> blockIndex)
 {
 	vector<CacheEntry<tagSize, memoryOffsetSize>*> vecSet;
 	for (int i = 0; i < associativity; i++)
 	{
 		vecSet.push_back(&set[i]);
 	}
-	return readSet(vecSet, address);
-}
-
-template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize, unsigned associativity>
-void CacheEmulator::FullAssociativeCache<memoryBlockIndexSize, memoryOffsetSize, cacheBlockIndexSize, tagSize, associativity>::write(bitset<memoryBlockIndexSize + memoryOffsetSize> address, char data)
-{
-	vector<CacheEntry<tagSize, memoryOffsetSize>*> vecSet;
-	for (int i = 0; i < associativity; i++)
-	{
-		vecSet.push_back(&set[i]);
-	}
-	writeSet(vecSet, address, data);
+	return vecSet;
 }
 
 template<unsigned memoryBlockIndexSize, unsigned memoryOffsetSize, unsigned cacheBlockIndexSize, unsigned tagSize, unsigned associativity>

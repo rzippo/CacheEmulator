@@ -25,6 +25,7 @@
     <ClInclude Include="source\CacheEntry.h" />
     <ClInclude Include="source\DirectMappedCache.h" />
     <ClInclude Include="source\FullAssociativeCache.h" />
+    <ClInclude Include="source\MemoryComponent.h" />
     <ClInclude Include="source\RAM.h" />
     <ClInclude Include="source\SetAssociativeCache.h" />
     <ClInclude Include="source\WriteStrategy.h" />
