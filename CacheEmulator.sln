@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CacheSimulator", "CacheSimulator\CacheSimulator.vcxproj", "{79B56D65-E104-4342-8072-F236DCD30A80}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CacheEmulator", "CacheEmulator\CacheEmulator.vcxproj", "{79B56D65-E104-4342-8072-F236DCD30A80}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

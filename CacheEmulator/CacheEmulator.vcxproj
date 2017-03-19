@@ -37,7 +37,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{79B56D65-E104-4342-8072-F236DCD30A80}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>CacheSimulator</RootNamespace>
+    <RootNamespace>CacheEmulator</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
     <ProjectName>CacheEmulator</ProjectName>
   </PropertyGroup>
